@@ -2,12 +2,14 @@ package com.example.tommy.dataCollection;
 
 import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.tommy.dataCollection.services.DataCollectService;
 import com.example.tommy.dataCollection.utils.FileTransfer;
 import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.wearable.DataApi;
 
 import java.util.ArrayList;
@@ -70,17 +72,37 @@ public class CollectOriginalSignalActivity extends WearableActivity
     }
 
     public void clickSend(final View view) {
-        boolean res = fileTransfer.send(data, new ResultCallback<DataApi.DataItemResult>() {
-            @Override
-            public void onResult(DataApi.DataItemResult dataItemResult) {
-                showText(dataItemResult.getStatus().isSuccess() ? "发送完成" : "发送失败!");
-                view.setEnabled(true);
-            }
-        });
-        if (res) {
-            view.setEnabled(false);
+        if (data[0].size() == 0) {
+            showText("发送失败! 当前数据为空.");
+            return;
         }
-        showText(res ? "发送中请稍后..." : "发送失败,请检查网络情况");
+
+        showText("开始发送...");
+        view.setEnabled(false);
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean res = fileTransfer.send(data, new ResultCallback<DataApi.DataItemResult>() {
+                    @Override
+                    public void onResult(DataApi.DataItemResult dataItemResult) {
+                        Status status = dataItemResult.getStatus();
+                        showText(status.isSuccess() ? "发送完成" : "发送失败!" + status.getStatusMessage());
+                        Log.i("SendData", status.getStatusMessage());
+                        view.setEnabled(true);
+                    }
+                });
+                if (!res) {
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            view.setEnabled(true);
+                        }
+                    });
+                    showText("发送失败,请检查网络情况");
+                }
+            }
+        }).start();
     }
 
     private void showText(final String msg) {

@@ -17,10 +17,8 @@ import java.util.Date;
 
 public class MainActivity extends AppCompatActivity{
     final String TAG = "Main";
-    final String FILE_PATH =
-            String.format(Environment.getExternalStorageDirectory().getAbsolutePath() +
-                    "/SensorRecords/" +
-                    new SimpleDateFormat("yyyy-MM-dd").format(new Date()));
+    final String BASE_PATH = Environment.getExternalStorageDirectory().getAbsolutePath() + "/SensorRecords/";
+    final String FILE_PATH = BASE_PATH + new SimpleDateFormat("yyyy-MM-dd").format(new Date());
 
     TextView logBoard;
     FileTransfer fileTransfer;
@@ -49,6 +47,8 @@ public class MainActivity extends AppCompatActivity{
             boolean res = dataFolder.mkdirs();
             LogUtil.log(TAG, "创建文件夹" + (res ? "成功" : "失败"));
         }
+
+        ftpLogin(null);
     }
 
     public void ftpLogin(View view) {
@@ -63,11 +63,33 @@ public class MainActivity extends AppCompatActivity{
 
     public void onSend(View view) {
         LogUtil.log("Main", "开始发送数据");
+        sendFiles(new File(FILE_PATH));
+    }
+
+    public void onSendAll(View view) {
+        File[] files = new File(BASE_PATH).listFiles();
+        if (files == null) {
+            LogUtil.log("Main", "文件夹为空,没有需要发送的数据");
+            return;
+        }
+
+        LogUtil.log("Main", "开始发送数据");
+        for (File file : files) {
+            if (file.isDirectory()) {
+                sendFiles(file);
+            }
+        }
+    }
+
+    /**
+     * 发送 dir 下的所有文件
+     * @param dir
+     */
+    public void sendFiles(final File dir) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                File directory = new File(FILE_PATH);
-                File[] files = directory.listFiles();
+                File[] files = dir.listFiles();
 
                 if (files == null) {
                     LogUtil.log("Main", "发送失败~文件夹为空");
@@ -75,11 +97,87 @@ public class MainActivity extends AppCompatActivity{
                 }
 
                 for (File file :files) {
-                    final String filename = file.getName();
-                    final boolean uploadFileRes = FTPUtil.getInstance().uploadFile(file.getAbsolutePath(), filename);
-                    LogUtil.log("FTP", "send file" + filename + (uploadFileRes ? " --success" : " --failed"));
+                    if (file.isFile()) {
+                        final String filename = file.getName();
+
+                        String remotePath = formatRemotePath(pathEt.getText().toString());
+
+                        final boolean uploadFileRes = FTPUtil.getInstance().uploadFile(
+                                file.getAbsolutePath(), remotePath + dir.getName(), filename);
+                        LogUtil.log("FTP", "send file" + filename + (uploadFileRes ? " --success" : " --failed"));
+                    }
                 }
             }
         }).start();
+    }
+
+    /**
+     * 规范远程路径，保证路径名前后都有 '/'
+     * 如: 将 'data' 转换为  '/data/'
+     * @param path
+     */
+    private String formatRemotePath(String path) {
+        if (path.length() == 0) {
+            path = "/";
+        }
+        if (path.charAt(0) != '/') {
+            path = '/' + path;
+        }
+        if (path.charAt(path.length() - 1) != '/') {
+            path = path + '/';
+        }
+
+        return path;
+    }
+
+    public void deleteToday(View view) {
+        LogUtil.log("Main", "删除今天的数据...");
+        deleteFolder(new File(FILE_PATH), false);
+        LogUtil.log("Main", "删除完毕");
+    }
+
+    public void deleteAll(View view) {
+        File[] files = new File(FILE_PATH).listFiles();
+        if (files == null) {
+            LogUtil.log("Main", "没有需要删除的数据");
+            return;
+        }
+
+        LogUtil.log("Main", "删除所有数据...");
+        deleteFolder(new File(BASE_PATH), false);
+        // 删除后需要重新创建今天的文件夹
+        new File(FILE_PATH).mkdirs();
+
+        LogUtil.log("Main", "删除完毕");
+    }
+
+    /**
+     * 递归删除文件夹下的所有文件和文件夹
+     * @param dir
+     * @param shouldDeleteFolder 是否需要将 dir 删除
+     */
+    private void deleteFolder(File dir, boolean shouldDeleteFolder) {
+        if (dir.isFile()) {
+            dir.delete();
+            return;
+        }
+
+        File[] contents = dir.listFiles();
+        if (contents != null) {
+            for (File f : contents) {
+                if (f.isDirectory()) {
+                    deleteFolder(f, true);
+                }
+                f.delete();
+            }
+        }
+        if (shouldDeleteFolder) {
+            dir.delete();
+            LogUtil.log("Main", String.format("已删除 %s", dir.getAbsolutePath()));
+        }
+    }
+
+    public void clearLogs(View view) {
+        logBoard.setText("Logs:");
     }
 }

@@ -47,12 +47,12 @@ public class FileTransfer {
     }
 
     public boolean send(ArrayList<Short>[] data, ResultCallback<DataApi.DataItemResult> callback) {
-        //将文件写到Asset中
         PutDataMapRequest dataMap = PutDataMapRequest.create("/send_file");
         DataMap dm = dataMap.getDataMap();
         try {
             for (int i = 0 ; i < data.length; ++i) {
-                dm.putString(DATA_KEY_MAP[i], array2String(data[i]));
+                Asset asset = Asset.createFromBytes(array2String(data[i]).getBytes());
+                dm.putAsset(DATA_KEY_MAP[i], asset);
             }
 
             PutDataRequest request = dataMap.asPutDataRequest();

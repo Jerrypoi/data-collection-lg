@@ -2,21 +2,18 @@ package com.example.tommy.dataCollection.utils;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.wearable.DataApi;
-import com.google.android.gms.wearable.DataEvent;
-import com.google.android.gms.wearable.DataEventBuffer;
-import com.google.android.gms.wearable.DataItem;
-import com.google.android.gms.wearable.DataMap;
-import com.google.android.gms.wearable.DataMapItem;
-import com.google.android.gms.wearable.Wearable;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.wearable.*;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 
 /**
  * Created by Administrator on 2018/1/16.
@@ -94,34 +91,39 @@ public class FileTransfer implements DataApi.DataListener {
         File dir = new File(savePath);
         for (int i = 0; i < DATA_KEY_MAP.length;i++) {
             int cnt = 0;
-            String data = dataMap.getString(DATA_KEY_MAP[i]);
-            if (data != null) {
+            Asset asset = dataMap.getAsset(DATA_KEY_MAP[i]);
+            if (asset != null) {
                 String fileName = DATA_KEY_MAP[i] + cnt;
                 File file = new File(dir,fileName);
                 while (file.exists()) {
                     fileName = DATA_KEY_MAP[i] + cnt++;
                     file = new File(dir,fileName);
                 }
-                saveDataToDisk(data, file);
+                saveDataToDisk(asset, file);
             }
         }
     }
 
-    private void saveDataToDisk(final String data, final File file) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    FileOutputStream fos = new FileOutputStream(file);
-                    fos.write(data.getBytes());
-                    fos.flush();
-                    fos.close();
+    private void saveDataToDisk(final Asset asset, final File file) {
+        Wearable.DataApi.getFdForAsset(mGoogleApiClient, asset)
+                .setResultCallback(new ResultCallback<DataApi.GetFdForAssetResult>() {
+                    @Override
+                    public void onResult(@NonNull DataApi.GetFdForAssetResult getFdForAssetResult) {
+                        try {
+                            FileOutputStream fos = new FileOutputStream(file);
+                            InputStream is = getFdForAssetResult.getInputStream();
+                            byte[] bytes = new byte[1024];
+                            while(is.read(bytes) > 0) {
+                                fos.write(bytes);
+                            }
+                            fos.flush();
+                            fos.close();
 
-                    LogUtil.log(TAG, String.format("file %s saved.", file.getName()));
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
+                            LogUtil.log(TAG, String.format("file %s saved.", file.getName()));
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                });
     }
 }

@@ -8,14 +8,14 @@
     tools:context="com.example.tommy.dataCollection.MainActivity">
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text="FTP IP:  "/>
+            android:orientation="horizontal" android:layout_weight="0">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="FTP IP:  "/>
         <EditText
                 android:id="@+id/ipEt"
                 android:layout_width="0dp"
@@ -26,14 +26,14 @@
                 android:textSize="16sp"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text=" user:  "/>
+            android:orientation="horizontal" android:layout_weight="0">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text=" user:  "/>
         <EditText
                 android:id="@+id/userEt"
                 android:layout_width="0dp"
@@ -45,14 +45,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-        <TextView
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:text=" password:  "/>
+            android:orientation="horizontal" android:layout_weight="0">
+        <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text=" password:  "/>
         <EditText
                 android:id="@+id/passwordEt"
                 android:layout_width="0dp"
@@ -65,7 +65,7 @@
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="horizontal">
+            android:orientation="horizontal" android:layout_weight="0">
         <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -82,36 +82,64 @@
     <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" android:layout_weight="0">
         <Button
-                android:id="@+id/ftpLoginBtnj"
+                android:id="@+id/ftpLoginBtn"
                 android:text="Login"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:onClick="ftpLogin"
                 android:layout_weight="1"/>
         <Button
-                android:id="@+id/start"
+                android:id="@+id/ftpSendBtn"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="ftp send"
+                android:text="SEND TODAY"
                 android:onClick="onSend"
                 android:layout_weight="1"/>
-    </LinearLayout>
-    <ScrollView
-            android:id="@+id/SCROLLER_ID"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:scrollbars="vertical"
-            android:fillViewport="true">
-
-        <TextView
-                android:padding="10dp"
-                android:id="@+id/LogWindow"
-                android:layout_width="fill_parent"
+        <Button
+                android:id="@+id/ftpSendAllBtn"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Logs:"/>
-
-    </ScrollView>
+                android:text="SEND ALL"
+                android:onClick="onSendAll"
+                android:layout_weight="1"/>
+    </LinearLayout>
+    <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_weight="0">
+        <Button
+                android:id="@+id/deleteBtn"
+                android:text="DELETE TODAY"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:onClick="deleteToday"
+                android:layout_weight="1" android:textColor="@android:color/holo_red_light"/>
+        <Button
+                android:id="@+id/deleteAllBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="DELETE ALL"
+                android:onClick="deleteAll"
+                android:layout_weight="1" android:textColor="@android:color/holo_red_light"/>
+        <Button
+                android:id="@+id/clearLogsBtn"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Clear Logs"
+                android:onClick="clearLogs"
+                android:layout_weight="1" android:textColor="@android:color/holo_red_light"/>
+    </LinearLayout>
+    <TextView
+            android:layout_margin="10dp"
+            android:id="@+id/LogWindow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Logs: "
+            android:layout_weight="1"
+            android:scrollbars="vertical"
+            android:fadeScrollbars="true"
+    />
 
 </LinearLayout>

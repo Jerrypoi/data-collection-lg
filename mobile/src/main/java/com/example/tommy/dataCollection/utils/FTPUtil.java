@@ -97,9 +97,10 @@ public class FTPUtil {
     /**
      * 上传文件
      * @param filePath    要上传文件所在SDCard的路径
+     * @param dir         要上传文件的远程文件夹
      * @param fileName    要上传的文件的文件名(如：Sim唯一标识码)
      */
-    public boolean uploadFile(String filePath, String fileName) {
+    public boolean uploadFile(String filePath, String dir, String fileName) {
 
         if (!ftpClient.isConnected()) {
             if (!login(ipAddr, username, password, savePath)) {
@@ -120,6 +121,8 @@ public class FTPUtil {
 
             //文件上传吧～
             FileInputStream fileInputStream = new FileInputStream(filePath);
+            ftpClient.makeDirectory(dir);
+            ftpClient.changeWorkingDirectory(dir);
             ftpClient.storeFile(fileName, fileInputStream);
 
             //关闭文件流
