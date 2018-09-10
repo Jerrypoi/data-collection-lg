@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.tommy.dataCollection.AppStart">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_centerInParent="true">
+        <Button
+                android:id="@+id/collectDataBtn1"
+                android:text="采集连续信号"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:onClick="startOriginalSignalActivity"
+        />
+        <Button
+                android:id="@+id/collectDataBtn2"
+                android:text="使用信号检测"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="startSegmentSignalActivity"
+        />
+        <TextView
+                android:id="@+id/textView"
+                android:text="注：采集连续信号指只进行信号的采集，而使用信号检测将采集检测到的信号，即这些信号已经被切段好了。"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:padding="5dp"
+        />
+    </LinearLayout>
+</RelativeLayout>

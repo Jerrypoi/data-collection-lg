@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.example.tommy.dataCollection.CollectOriginalSignalActivity">
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:layout_centerInParent="true">
+
+        <Button
+                android:id="@+id/startBtn"
+                android:text="Start"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="clickStart"
+        />
+        <Button
+                android:id="@+id/saveBtn"
+                android:text="Save"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="clickSave"
+        />
+        <Button
+                android:id="@+id/sendBtn"
+                android:text="Send"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="clickSend"
+        />
+    </LinearLayout>
+</RelativeLayout>
