@@ -112,9 +112,9 @@ public class FileTransfer implements DataApi.DataListener {
                         try {
                             FileOutputStream fos = new FileOutputStream(file);
                             InputStream is = getFdForAssetResult.getInputStream();
-                            byte[] bytes = new byte[1024];
-                            while(is.read(bytes) > 0) {
-                                fos.write(bytes);
+                            int b;
+                            while((b = is.read()) != -1) {
+                                fos.write((byte) b);
                             }
                             fos.flush();
                             fos.close();
