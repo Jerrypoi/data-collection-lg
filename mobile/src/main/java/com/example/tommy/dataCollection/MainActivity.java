@@ -1,5 +1,6 @@
 package com.example.tommy.dataCollection;
 
+import android.content.SharedPreferences;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity{
         userEt = (EditText) findViewById(R.id.userEt);
         passwordEt = (EditText) findViewById(R.id.passwordEt);
         pathEt = (EditText) findViewById(R.id.pathEt);
+        initEditTextValue();
 
         fileTransfer = new FileTransfer(this, FILE_PATH);
         fileTransfer.connect();
@@ -47,17 +49,34 @@ public class MainActivity extends AppCompatActivity{
             boolean res = dataFolder.mkdirs();
             LogUtil.log(TAG, "创建文件夹" + (res ? "成功" : "失败"));
         }
+    }
 
-        ftpLogin(null);
+    private void initEditTextValue() {
+        SharedPreferences sp = getSharedPreferences("Main", MODE_PRIVATE);
+        ipEt.setText(sp.getString("ip", "172.31.73.46"));
+        userEt.setText(sp.getString("user", "admin"));
+        passwordEt.setText(sp.getString("password", "654321"));
+        pathEt.setText(sp.getString("path", "/data/"));
     }
 
     public void ftpLogin(View view) {
-        boolean res = FTPUtil.getInstance().login(
-                ipEt.getText().toString(),
-                userEt.getText().toString(),
-                passwordEt.getText().toString(),
-                pathEt.getText().toString()
-        );
+        String ip = ipEt.getText().toString();
+        String user = userEt.getText().toString();
+        String password = passwordEt.getText().toString();
+        String path = pathEt.getText().toString();
+
+        boolean res = FTPUtil.getInstance().login(ip, user, password, path);
+
+        if (res) {
+            // 登录成功则保存当前信息到手机上
+            SharedPreferences sp = getSharedPreferences("Main", MODE_PRIVATE);
+            SharedPreferences.Editor editor = sp.edit();
+            editor.putString("ip", ip);
+            editor.putString("user", user);
+            editor.putString("password", password);
+            editor.putString("path", path);
+        }
+
         LogUtil.log("FTP", res ? "登录成功!" : "登录失败, 请检查网络设置.");
     }
 
