@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity{
 
                         final boolean uploadFileRes = FTPUtil.getInstance().uploadFile(
                                 file.getAbsolutePath(), remotePath + dir.getName(), filename);
-                        LogUtil.log("FTP", "send file" + filename + (uploadFileRes ? " --success" : " --failed"));
+                        LogUtil.log("FTP", "send file " + filename + (uploadFileRes ? " --success" : " --failed"));
                     }
                 }
             }

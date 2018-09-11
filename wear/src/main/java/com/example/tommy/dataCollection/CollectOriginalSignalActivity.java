@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.wearable.activity.WearableActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.Toast;
 import com.example.tommy.dataCollection.services.DataCollectService;
@@ -39,6 +40,9 @@ public class CollectOriginalSignalActivity extends WearableActivity
         for (int i = 0; i < 6; ++i) {
             data[i] = new ArrayList<>();
         }
+
+        // keep screen on
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
     }
 
     @Override
