@@ -24,8 +24,8 @@ dependencies {
     implementation 'com.android.support:support-v4:25.4.0'
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.google.android.support:wearable:2.0.3'
-    compile 'com.google.android.gms:play-services-wearable:9.6.1'
+    compile 'com.google.android.gms:play-services-wearable:8.3.0'
     provided 'com.google.android.wearable:wearable:2.0.3'
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
+    compile 'com.google.android.gms:play-services-maps:8.3.0'
     implementation files('src/main/lib/commons-net-3.0.1.jar')
 }

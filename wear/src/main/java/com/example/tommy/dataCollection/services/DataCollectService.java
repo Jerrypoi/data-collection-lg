@@ -80,7 +80,6 @@ public class DataCollectService {
 
                     File file = new File("/sys/class/misc/fastacc_mpu/device/fifo");
                     DataInputStream fis = new DataInputStream(new FileInputStream(file));
-
                     Log.i(TAG, "run: 清除已有数据");
                     byte[] bytes = new byte[168000];
                     fis.read(bytes);
